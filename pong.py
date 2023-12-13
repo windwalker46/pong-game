@@ -1,5 +1,6 @@
 # pong.py
 import pygame
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -15,8 +16,8 @@ WHITE = (255, 255, 255)
 
 # Paddle and Ball
 paddle_width = 15
-paddle_height = 90
-ball_size = 20
+paddle_height = 100
+ball_size = 25
 
 # Create Rects for paddles and ball
 player_paddle = pygame.Rect(50, (screen_height - paddle_height) / 2, paddle_width, paddle_height)
@@ -24,15 +25,15 @@ opponent_paddle = pygame.Rect(screen_width - 50 - paddle_width, (screen_height -
 ball = pygame.Rect(screen_width / 2 - ball_size / 2, screen_height / 2 - ball_size / 2, ball_size, ball_size)
 
 # Ball Speed
-ball_speed_x = 7
-ball_speed_y = 7
+ball_speed_x = 0.4  # Significantly reduced speed
+ball_speed_y = 0.4  # Significantly reduced speed
 
 # Player Paddle Speed
 player_speed = 0
-player_speed_increment = 10
+player_speed_increment = 3  # Maintained precise control speed
 
 # Opponent Paddle Speed
-opponent_speed = 7
+opponent_speed = 0.8  # Maintained speed for opponent
 
 # Scoring
 player_score = 0
@@ -42,8 +43,8 @@ font = pygame.font.Font(None, 36)
 def ball_restart():
     global ball_speed_x, ball_speed_y
     ball.center = (screen_width / 2, screen_height / 2)
-    ball_speed_x *= -1
-    ball_speed_y *= -1
+    ball_speed_y = 0.5 * random.choice((1,-1))
+    ball_speed_x = 0.5 * random.choice((1,-1))
 
 def game_restart():
     global player_score, opponent_score
@@ -72,9 +73,9 @@ while running:
 
     # Player Paddle Movement
     player_paddle.y += player_speed
-    if player_paddle.top <= 0:
+    if player_paddle.top < 0:
         player_paddle.top = 0
-    if player_paddle.bottom >= screen_height:
+    if player_paddle.bottom > screen_height:
         player_paddle.bottom = screen_height
 
     # Opponent Paddle Movement
@@ -83,17 +84,49 @@ while running:
     elif opponent_paddle.centery > ball.centery:
         opponent_paddle.y -= opponent_speed
 
+    # Store the position as floats
+    player_paddle_y = float(player_paddle.y)
+    opponent_paddle_y = float(opponent_paddle.y)
+    ball_x = float(ball.x)
+    ball_y = float(ball.y)
+
+    # Update the position using the float values
+    player_paddle_y += player_speed
+    opponent_paddle_y += opponent_speed
+    ball_x += ball_speed_x
+    ball_y += ball_speed_y
+
+    # Assign the integer values to the Rect objects
+    player_paddle.y = int(player_paddle_y)
+    opponent_paddle.y = int(opponent_paddle_y)
+    ball.x = int(ball_x)
+    ball.y = int(ball_y)
+
     # Ball Movement
     ball.x += ball_speed_x
     ball.y += ball_speed_y
 
-    # Ball and Paddle Collision
-    if ball.colliderect(player_paddle) or ball.colliderect(opponent_paddle):
-        ball_speed_x *= -1
-
     # Ball Collision with Top and Bottom Walls
     if ball.top <= 0 or ball.bottom >= screen_height:
         ball_speed_y *= -1
+
+    # Ball gets stuck behind paddle
+    if ball.right >= opponent_paddle.left and ball.left <= opponent_paddle.right:
+        if ball.top >= opponent_paddle.bottom or ball.bottom <= opponent_paddle.top:
+            ball_restart()
+
+    # Paddle collision with top and bottom
+    if player_paddle.top <= 0:
+        player_paddle.top = 0
+    if player_paddle.bottom >= screen_height:
+        player_paddle.bottom = screen_height
+
+    # Ball and Paddle Collision
+    if ball.colliderect(player_paddle) and not ball.colliderect(opponent_paddle):
+        ball_speed_x *= -1
+        # Reverse y direction if ball is moving up and hits the top of the paddle, or if it's moving down and hits the bottom
+        if (ball_speed_y < 0 and ball.bottom <= player_paddle.top) or (ball_speed_y > 0 and ball.top >= player_paddle.bottom):
+            ball_speed_y *= -1
 
     # Ball Out of Bounds
     if ball.left <= 0:
