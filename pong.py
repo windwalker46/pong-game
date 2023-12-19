@@ -25,8 +25,8 @@ opponent_paddle = pygame.Rect(screen_width - 50 - paddle_width, (screen_height -
 ball = pygame.Rect(screen_width / 2 - ball_size / 2, screen_height / 2 - ball_size / 2, ball_size, ball_size)
 
 # Ball Speed
-ball_speed_x = 0.4  # Significantly reduced speed
-ball_speed_y = 0.4  # Significantly reduced speed
+ball_speed_x = 100  # Significantly reduced speed
+ball_speed_y = 100  # Significantly reduced speed
 
 # Player Paddle Speed
 player_speed = 0
@@ -54,6 +54,9 @@ def game_restart():
 
 # Start the game
 game_restart()
+
+# Initialize the clock
+clock = pygame.time.Clock()
 
 # Game loop
 running = True
@@ -122,7 +125,7 @@ while running:
         player_paddle.bottom = screen_height
 
     # Ball and Paddle Collision
-    if ball.colliderect(player_paddle) and not ball.colliderect(opponent_paddle):
+    if ball.colliderect(player_paddle) or ball.colliderect(opponent_paddle):
         ball_speed_x *= -1
         # Reverse y direction if ball is moving up and hits the top of the paddle, or if it's moving down and hits the bottom
         if (ball_speed_y < 0 and ball.bottom <= player_paddle.top) or (ball_speed_y > 0 and ball.top >= player_paddle.bottom):
@@ -147,6 +150,9 @@ while running:
     opponent_text = font.render(str(opponent_score), True, WHITE)
     screen.blit(player_text, (screen_width / 4, 20))
     screen.blit(opponent_text, (3 * screen_width / 4, 20))
+
+    # Control the game speed and adjust the ball speed based on the time that has passed
+    timedelta = clock.tick(480) 
 
     # Update the screen
     pygame.display.flip()
