@@ -47,9 +47,10 @@ font = pygame.font.Font(None, 36)
 def draw_start_menu():
    global game_state
    screen.fill((0, 0, 0))
-   font = pygame.font.SysFont('arial', 40)
+   font = pygame.font.SysFont('arial', 50)
    title = font.render('Pong Game', True, (255, 255, 255))
-   press_enter = font.render('Press Enter to play', True, (255, 255, 255))
+   font_instruction = pygame.font.SysFont('arial', 30)
+   press_enter = font_instruction.render('Press Enter To Play', True, (255, 255, 255))
    screen.blit(title, (screen_width/2 - title.get_width()/2, screen_height/2 - title.get_height() - 30))
    screen.blit(press_enter, (screen_width/2 - press_enter.get_width()/2, screen_height/2 + title.get_height() - 30))
    pygame.display.update()
