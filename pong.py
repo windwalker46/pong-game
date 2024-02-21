@@ -15,6 +15,9 @@ screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Pong Game")
 
+# Load the background image
+back_ground = pygame.image.load("assets/background.png")
+
 # Colors
 WHITE = (255, 255, 255)
 
@@ -46,13 +49,16 @@ font = pygame.font.Font(None, 36)
 
 def draw_start_menu():
    global game_state
-   screen.fill((0, 0, 0))
+   screen.blit(back_ground, (0, 0))
+   
    font = pygame.font.SysFont('arial', 50)
    title = font.render('Pong Game', True, (255, 255, 255))
    font_instruction = pygame.font.SysFont('arial', 30)
    press_enter = font_instruction.render('Press Enter To Play', True, (255, 255, 255))
+   
    screen.blit(title, (screen_width/2 - title.get_width()/2, screen_height/2 - title.get_height() - 30))
    screen.blit(press_enter, (screen_width/2 - press_enter.get_width()/2, screen_height/2 + title.get_height() - 30))
+   
    pygame.display.update()
 
    # Reset Scores
