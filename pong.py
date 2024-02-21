@@ -45,15 +45,15 @@ opponent_speed = 5
 # Scoring
 player_score = 0
 opponent_score = 0
-font = pygame.font.Font(None, 36)
+font = pygame.font.Font("assets/font.ttf", 36)
 
 def draw_start_menu():
    global game_state
    screen.blit(back_ground, (0, 0))
    
-   font = pygame.font.SysFont('arial', 50)
+   font = pygame.font.SysFont("assets/font.ttf", 100)
    title = font.render('Pong Game', True, (255, 255, 255))
-   font_instruction = pygame.font.SysFont('arial', 30)
+   font_instruction = pygame.font.SysFont("assets/font.ttf", 50)
    press_enter = font_instruction.render('Press Enter To Play', True, (255, 255, 255))
    
    screen.blit(title, (screen_width/2 - title.get_width()/2, screen_height/2 - title.get_height() - 30))
