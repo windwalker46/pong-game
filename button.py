@@ -1,18 +1,18 @@
 class Button():
    
     # Constructor
-    def __init__(self, image, pos, text_input, font, base_color, hovering_color):
+    def __init__(self, image, pos, textInput, font, baseColor, hoveringColor):
         
         # Initialize button properties
         self.image = image  # Image of the button, can be None
         self.x_pos = pos[0]  # X position of the button
         self.y_pos = pos[1]  # Y position of the button
         self.font = font  # Font used for the button's text
-        self.base_color, self.hovering_color = base_color, hovering_color  # Colors for normal and hover states
-        self.text_input = text_input  # Text displayed on the button
+        self.baseColor, self.hoveringColor = baseColor, hoveringColor  # Colors for normal and hover states
+        self.textInput = textInput  # Text displayed on the button
         
         # Render the text with the base color
-        self.text = self.font.render(self.text_input, True, self.base_color)
+        self.text = self.font.render(self.textInput, True, self.baseColor)
         
         # If no image is provided, use the rendered text as the button image
         if self.image is None:
@@ -44,7 +44,7 @@ class Button():
         # Check if mouse position is within the button's rect
         if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
             # Change text color to the hovering color
-            self.text = self.font.render(self.text_input, True, self.hovering_color)
+            self.text = self.font.render(self.textInput, True, self.hoveringColor)
         else:
             # Change text color back to the base color
-            self.text = self.font.render(self.text_input, True, self.base_color)
+            self.text = self.font.render(self.textInput, True, self.baseColor)
