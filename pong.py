@@ -1,5 +1,6 @@
 import pygame
 import random
+from button import Button
 
 # Initialize Pygame
 pygame.init()
@@ -8,18 +9,23 @@ pygame.init()
 game_state = "start_menu" # Tracks current game status (Start menu, main game, game over)
 running = True # Main game loop
 ball_moving = False # Flag to check if the ball is moving
+font = pygame.font.Font("assets/font.ttf", 36) 
 
 # Screen setup
 screen_width = 1280
 screen_height = 720
+WHITE = (255, 255, 255) # RGB color for white
+
 screen = pygame.display.set_mode((screen_width, screen_height)) # Initialize display window
 
 # Load assets
 back_ground = pygame.image.load("assets/background.png") # Load background image
 
-# Color definitions
-WHITE = (255, 255, 255) # RGB color for white
+# Button setup for the start button
+start_button = Button(image=pygame.image.load("assets/playRect.png"), pos=(screen_width / 2, screen_height / 2 + 100), 
+                      text_input="START", font=pygame.font.Font("assets/font.ttf", 36), base_color= WHITE, hovering_color=(100, 100, 100))
 
+# Color definitions
 # Paddle and Ball dimensions
 paddle_width = 15
 paddle_height = 100
@@ -40,7 +46,6 @@ opponent_speed = 5 # Speed of opponent's paddle
 # Scoring
 player_score = 0 # Player's score
 opponent_score = 0 # Opponent's score
-font = pygame.font.Font("assets/font.ttf", 36) # Font for displaying scores
 
 # Function to draw start menu
 def draw_start_menu():
@@ -49,13 +54,16 @@ def draw_start_menu():
    
    # Set up the menu text
    font = pygame.font.Font("assets/font.ttf", 60)
-   title = font.render('Pong Game', True, (255, 255, 255))
+   title = font.render('Pong Game', True, WHITE)
    font_instruction = pygame.font.Font("assets/font.ttf", 20)
-   press_enter = font_instruction.render('Press Enter To Play', True, (255, 255, 255))
    
    # Positioning the menu text
    screen.blit(title, (screen_width/2 - title.get_width()/2, screen_height/2 - title.get_height() - 30))
-   screen.blit(press_enter, (screen_width/2 - press_enter.get_width()/2, screen_height/2 + title.get_height() - 30))
+
+   # Handle the start button
+   mouse_pos = pygame.mouse.get_pos()  # Get current mouse position
+   start_button.changeColor(mouse_pos)  # Change button color on hover
+   start_button.update(screen)  # Draw button on the screen
    
    pygame.display.update() # Update the display to show the menu
 
@@ -63,18 +71,15 @@ def draw_start_menu():
    player_score = 0
    opponent_score = 0
 
-   # Wait for the player input to start the game
-   waiting_for_key = True
-   while waiting_for_key:
-       for event in pygame.event.get():
-           if event.type == pygame.QUIT:
-               pygame.quit()
-               exit()
-           if event.type == pygame.KEYDOWN:
-               if event.key == pygame.K_RETURN:
-                  game_state = "main_game"
-                  ball_moving = False
-                  waiting_for_key = False
+    # Check for mouse click on the start button
+   for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        exit()
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        if start_button.checkForInput(mouse_pos):
+            game_state = "main_game"
+            ball_moving = False
 
 # Funtion to reset the ball position
 def ball_restart():
