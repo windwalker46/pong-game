@@ -22,8 +22,12 @@ screen = pygame.display.set_mode((screenWidth, screenHeight)) # Initialize displ
 backGround = pygame.image.load("assets/background.png") # Load background image
 
 # Button setup for the start button
-startButton = Button(image=pygame.image.load("assets/playRect.png"), pos=(screenWidth / 2, screenHeight / 2 + 100), 
-                      textInput="START", font=pygame.font.Font("assets/font.ttf", 36), baseColor= WHITE, hoveringColor=(100, 100, 100))
+startButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screenWidth / 2, screenHeight / 2 + 40), 
+                      textInput="START", font=pygame.font.Font("assets/font.ttf", 28), baseColor= WHITE, hoveringColor=(100, 100, 100))
+
+# Button setup for options button
+optionsButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screenWidth / 2, screenHeight / 2 + 130), 
+                      textInput="OPTIONS", font=pygame.font.Font("assets/font.ttf", 28), baseColor= WHITE, hoveringColor=(100, 100, 100))
 
 # Color definitions
 # Paddle and Ball dimensions
@@ -53,17 +57,20 @@ def drawStartMenu():
    screen.blit(backGround, (0, 0)) # Draw the background image
    
    # Set up the menu text
-   font = pygame.font.Font("assets/font.ttf", 60)
+   font = pygame.font.Font("assets/font.ttf", 65)
    title = font.render('Pong Game', True, WHITE)
-   fontInstruction = pygame.font.Font("assets/font.ttf", 20)
    
    # Positioning the menu text
-   screen.blit(title, (screenWidth/2 - title.get_width()/2, screenHeight/2 - title.get_height() - 30))
+   screen.blit(title, (screenWidth/2 - title.get_width()/2, screenHeight/2 - title.get_height() - 60))
 
    # Handle the start button
    mousePos = pygame.mouse.get_pos()  # Get current mouse position
    startButton.changeColor(mousePos)  # Change button color on hover
    startButton.update(screen)  # Draw button on the screen
+
+   # Handle the options button
+   optionsButton.changeColor(mousePos)  # Change button color on hover
+   optionsButton.update(screen)  # Draw button on the screen
    
    pygame.display.update() # Update the display to show the menu
 
