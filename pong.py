@@ -32,9 +32,9 @@ optionsButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(scr
                         textInput="OPTIONS", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))
 
 # Increase and decrease buttons for winning score and back button for the options menu
-increaseScoreButton = Button(image=None, pos=(screenWidth / 2 + 100, screenHeight / 2),
+increaseScoreButton = Button(image=None, pos=(screenWidth / 2 + 100, screenHeight / 2 + 115),
                              textInput="+", font=pygame.font.Font("assets/font.ttf", 36), baseColor=WHITE, hoveringColor=(100, 100, 100))
-decreaseScoreButton = Button(image=None, pos=(screenWidth / 2 - 100, screenHeight / 2),
+decreaseScoreButton = Button(image=None, pos=(screenWidth / 2 - 100, screenHeight / 2 + 115),
                              textInput="-", font=pygame.font.Font("assets/font.ttf", 36), baseColor=WHITE, hoveringColor=(100, 100, 100))
 backButton = Button(image=None, pos=(screenWidth / 2, screenHeight / 2 + 200),
                     textInput="BACK", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))
@@ -59,16 +59,17 @@ opponentSpeed = 5  # Speed of opponent's paddle
 playerScore = 0  # Player's score
 opponentScore = 0  # Opponent's score
 
+# Draw the options menu
 def drawOptionsMenu():
     global winningScore, gameState
     screen.blit(backGround, (0, 0))
 
     optionsFont = pygame.font.Font("assets/font.ttf", 65)
     optionsTitle = optionsFont.render('Options', True, WHITE)
-    screen.blit(optionsTitle, (screenWidth / 2 - optionsTitle.get_width() / 2, screenHeight / 4))
+    screen.blit(optionsTitle, (screenWidth / 2 - optionsTitle.get_width() / 2, screenHeight / 4 + 55))
 
     scoreText = font.render(f'Winning Score: {winningScore}', True, WHITE)
-    screen.blit(scoreText, (screenWidth / 2 - scoreText.get_width() / 2, screenHeight / 2 - 50))
+    screen.blit(scoreText, (screenWidth / 2 - scoreText.get_width() / 2, screenHeight / 2 + 10))
 
     mousePos = pygame.mouse.get_pos()
     for button in [increaseScoreButton, decreaseScoreButton, backButton]:
