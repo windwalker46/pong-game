@@ -1,6 +1,7 @@
 import pygame
 import random
 from button import Button, initButton
+from gameFunctions import drawStartMenu, drawOptionsMenu, ballRestart
 
 # Initialize Pygame
 pygame.init()
@@ -9,7 +10,7 @@ pygame.init()
 gameState = "startMenu"  # Tracks current game status (Start menu, main game, game over)
 running = True  # Main game loop
 ballMoving = False  # Flag to check if the ball is moving
-winningScore = 5  # Initialize winning score
+winningScore = 3  # Default winning score
 font = pygame.font.Font("assets/font.ttf", 36)
 clock = pygame.time.Clock()  # Initialize Pygame clock
 
@@ -17,110 +18,49 @@ clock = pygame.time.Clock()  # Initialize Pygame clock
 screenWidth = 1280
 screenHeight = 720
 WHITE = (255, 255, 255)  # RGB color for white
-
 screen = pygame.display.set_mode((screenWidth, screenHeight))  # Initialize display window
-
-# Load assets
 backGround = pygame.image.load("assets/background.png")  # Load background image
 
 # Initialize buttons
 startButton, optionsButton, increaseScoreButton, decreaseScoreButton, backButton = initButton(screenWidth, screenHeight, font, WHITE, (100, 100, 100))
 
-# Paddle and Ball dimensions
+# Paddle and Ball setup
 paddleWidth = 15
 paddleHeight = 100
 ballSize = 25
-
-# Rectangles for game objects
 playerPaddle = pygame.Rect(50, (screenHeight - paddleHeight) / 2, paddleWidth, paddleHeight)
 opponentPaddle = pygame.Rect(screenWidth - 50 - paddleWidth, (screenHeight - paddleHeight) / 2, paddleWidth, paddleHeight)
-ball = pygame.Rect(screenWidth / 2 - ballSize / 2, screenHeight / 2 - ballSize / 2, ballSize, ballSize)
+ball = pygame.Rect(screenWidth / 2 - ballSize / 2, screenHeight / 2 - ballSize / 2, ballSize, ballSize) # Initial position of the ball
 
-# Movement speeds
+# Movement speeds and Scoring
 ballSpeedX = 7  # Initial horizontal speed of the ball
 ballSpeedY = 7  # Initial vertical speed of the ball
 playerSpeedIncrement = 10  # Speed increment for player's paddle
 opponentSpeed = 5  # Speed of opponent's paddle
-
-# Scoring
 playerScore = 0  # Player's score
 opponentScore = 0  # Opponent's score
-
-# Draw the options menu
-def drawOptionsMenu():
-    global winningScore, gameState
-    screen.blit(backGround, (0, 0))
-
-    optionsFont = pygame.font.Font("assets/font.ttf", 65)
-    optionsTitle = optionsFont.render('Options', True, WHITE)
-    screen.blit(optionsTitle, (screenWidth / 2 - optionsTitle.get_width() / 2, screenHeight / 4 + 55))
-
-    scoreText = font.render(f'Winning Score: {winningScore}', True, WHITE)
-    screen.blit(scoreText, (screenWidth / 2 - scoreText.get_width() / 2, screenHeight / 2 + 10))
-
-    mousePos = pygame.mouse.get_pos()
-    for button in [increaseScoreButton, decreaseScoreButton, backButton]:
-        button.changeColor(mousePos)
-        button.update(screen)
-
-def drawStartMenu():
-    global gameState
-    screen.blit(backGround, (0, 0))
-
-    font = pygame.font.Font("assets/font.ttf", 65)
-    title = font.render('Pong Game', True, WHITE)
-    screen.blit(title, (screenWidth/2 - title.get_width()/2, screenHeight/2 - title.get_height() - 60))
-
-    mousePos = pygame.mouse.get_pos()
-    startButton.changeColor(mousePos)
-    startButton.update(screen)
-    optionsButton.changeColor(mousePos)
-    optionsButton.update(screen)
-
-def ballRestart():
-    global ballSpeedX, ballSpeedY, ballMoving, playerScore, opponentScore, gameState
-    ball.center = (screenWidth / 2, screenHeight / 2)  # Center the ball
-    ballSpeedY = 7 * random.choice((1, -1))  # Randomize vertical direction
-    ballSpeedX = 7 * random.choice((1, -1))  # Randomize horizontal direction
-    ballMoving = True  # Start moving the ball
-
-    # Check for winning score
-    if playerScore >= winningScore:
-        print("Player wins!")
-        gameState = "startMenu"
-    elif opponentScore >= winningScore:
-        print("Opponent wins!")
-        gameState = "startMenu"
-
-def gameRestart():
-    global playerScore, opponentScore, gameState, ballMoving
-    playerScore = 0
-    opponentScore = 0
-    gameState = "startMenu"
-    ballMoving = False
 
 # Main game loop
 while running:
     mousePos = pygame.mouse.get_pos()
     events = pygame.event.get()  # Retrieve all events once and use this list for processing
+    
     for event in events:
         if event.type == pygame.QUIT:
             running = False
-
-        if gameState == "startMenu":
-            drawStartMenu()
+        # Start menu and options menu handling
+        if gameState == "startMenu": 
+            drawStartMenu(screen, backGround, font, WHITE, screenWidth, screenHeight, startButton, optionsButton)
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if startButton.checkForInput(mousePos):
                         gameState = "mainGame"
                         ballMoving = True  # Ball should move when the game starts
-                        playerScore = 0
-                        opponentScore = 0
+                        playerScore, opponentScore = 0, 0
                     elif optionsButton.checkForInput(mousePos):
                         gameState = "optionsMenu"
-        
         elif gameState == "optionsMenu":
-            drawOptionsMenu()
+            drawOptionsMenu(screen, backGround, font, WHITE, screenWidth, screenHeight, winningScore, [increaseScoreButton, decreaseScoreButton, backButton])
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if increaseScoreButton.checkForInput(mousePos):
@@ -129,46 +69,52 @@ while running:
                         winningScore -= 1  # Adjust winning score
                     elif backButton.checkForInput(mousePos):
                         gameState = "startMenu"
-
-    if gameState == "mainGame":
-        # Paddle Movement
+    # loop to handle main game logic
+    if gameState == "mainGame" and ballMoving:
+        # Handle player input
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             playerPaddle.y -= playerSpeedIncrement
-        if keys[pygame.K_DOWN]:
+        elif keys[pygame.K_DOWN]:
             playerPaddle.y += playerSpeedIncrement
 
-        # Keep paddles within screen bounds
+        # Ensure paddle remains within screen bounds
         playerPaddle.clamp_ip(screen.get_rect())
-        opponentPaddle.clamp_ip(screen.get_rect())
 
         # Opponent AI follows the ball
-        if ballMoving:
-            if opponentPaddle.centery < ball.centery:
-                opponentPaddle.y += opponentSpeed
-            elif opponentPaddle.centery > ball.centery:
-                opponentPaddle.y -= opponentSpeed
+        if opponentPaddle.centery < ball.centery:
+            opponentPaddle.y += opponentSpeed
+        elif opponentPaddle.centery > ball.centery:
+            opponentPaddle.y -= opponentSpeed
 
-        # Ball Movement
-        if ballMoving:
-            ball.x += ballSpeedX
-            ball.y += ballSpeedY
+        # Ball movement and collision handling
+        ball.x += ballSpeedX
+        ball.y += ballSpeedY
+        if ball.top <= 0 or ball.bottom >= screenHeight or ball.colliderect(playerPaddle) or ball.colliderect(opponentPaddle):
+            ballSpeedY = -ballSpeedY if ball.top <= 0 or ball.bottom >= screenHeight else ballSpeedY
+            ballSpeedX = -ballSpeedX if ball.colliderect(playerPaddle) or ball.colliderect(opponentPaddle) else ballSpeedX
 
-            # Wall Collision
-            if ball.top <= 0 or ball.bottom >= screenHeight:
-                ballSpeedY = -ballSpeedY
-
-            # Paddle Collision
-            if ball.colliderect(playerPaddle) or ball.colliderect(opponentPaddle):
-                ballSpeedX = -ballSpeedX
-
-            # Score Update & Ball Reset
+        # Score update and check for game over
+        if ball.right >= screenWidth or ball.left <= 0:
             if ball.right >= screenWidth:
                 playerScore += 1
-                ballRestart()
-            elif ball.left <= 0:
+            else:
                 opponentScore += 1
-                ballRestart()
+
+            ballSpeedX, ballSpeedY, ballMoving = ballRestart(ball, screenWidth, screenHeight, playerScore, opponentScore, winningScore)
+
+        # Check for winning condition is met to update gameState
+        if playerScore >= winningScore:
+            print("Player wins!")
+            gameState = "startMenu"
+            ballMoving = False  # Stop the ball movement
+            playerScore, opponentScore = 0, 0  # Reset scores
+        elif opponentScore >= winningScore:
+            print("Opponent wins!")
+            gameState = "startMenu"
+            ballMoving = False
+            playerScore, opponentScore = 0, 0
+
 
         # Drawing game objects and scores
         screen.fill((0, 0, 0))
