@@ -6,7 +6,8 @@ Introduction:
 Installation:
 - Requirements: Python, Pygame
 - Pygame: install with pip
-- pip install pygame
+
+  pip install pygame
 
 Gameplay:
 - Start the Game: Click "Start" on the menu.
@@ -14,4 +15,5 @@ Gameplay:
 - Options: Adjust winning score in the options menu.
 
 Running the game:
-- python Pong.py
+
+  python Pong.py
