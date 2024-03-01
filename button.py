@@ -1,3 +1,4 @@
+import pygame
 class Button():
    
     # Constructor
@@ -48,3 +49,43 @@ class Button():
         else:
             # Change text color back to the base color
             self.text = self.font.render(self.textInput, True, self.baseColor)
+
+# Function to initialize and return buttons
+def initButton(screen_width, screen_height, font, base_color, hovering_color):
+
+    # Font for the buttons
+    fontButton = pygame.font.Font("assets/font.ttf", 28)
+    
+    # Button setup for the start button
+    startButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screen_width / 2, screen_height / 2 + 40),
+                          textInput="START", font=fontButton, baseColor=base_color, hoveringColor=hovering_color)
+
+    # Button setup for options button
+    optionsButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screen_width / 2, screen_height / 2 + 130),
+                            textInput="OPTIONS", font=fontButton, baseColor=base_color, hoveringColor=hovering_color)
+
+    # Increase and decrease buttons for winning score and back button for the options menu
+    increaseScoreButton = Button(image=None, pos=(screen_width / 2 + 100, screen_height / 2 + 115),
+                                 textInput="+", font=font, baseColor=base_color, hoveringColor=hovering_color)
+    decreaseScoreButton = Button(image=None, pos=(screen_width / 2 - 100, screen_height / 2 + 115),
+                                 textInput="-", font=font, baseColor=base_color, hoveringColor=hovering_color)
+    backButton = Button(image=None, pos=(screen_width / 2, screen_height / 2 + 200),
+                        textInput="BACK", font=fontButton, baseColor=base_color, hoveringColor=hovering_color)
+
+    return startButton, optionsButton, increaseScoreButton, decreaseScoreButton, backButton
+
+# # Button setup for the start button
+# startButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screenWidth / 2, screenHeight / 2 + 40),
+#                       textInput="START", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))
+
+# # Button setup for options button
+# optionsButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screenWidth / 2, screenHeight / 2 + 130),
+#                         textInput="OPTIONS", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))
+
+# # Increase and decrease buttons for winning score and back button for the options menu
+# increaseScoreButton = Button(image=None, pos=(screenWidth / 2 + 100, screenHeight / 2 + 115),
+#                              textInput="+", font=pygame.font.Font("assets/font.ttf", 36), baseColor=WHITE, hoveringColor=(100, 100, 100))
+# decreaseScoreButton = Button(image=None, pos=(screenWidth / 2 - 100, screenHeight / 2 + 115),
+#                              textInput="-", font=pygame.font.Font("assets/font.ttf", 36), baseColor=WHITE, hoveringColor=(100, 100, 100))
+# backButton = Button(image=None, pos=(screenWidth / 2, screenHeight / 2 + 200),
+#                     textInput="BACK", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))

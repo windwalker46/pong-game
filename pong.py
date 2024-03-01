@@ -1,6 +1,6 @@
 import pygame
 import random
-from button import Button
+from button import Button, initButton
 
 # Initialize Pygame
 pygame.init()
@@ -23,21 +23,8 @@ screen = pygame.display.set_mode((screenWidth, screenHeight))  # Initialize disp
 # Load assets
 backGround = pygame.image.load("assets/background.png")  # Load background image
 
-# Button setup for the start button
-startButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screenWidth / 2, screenHeight / 2 + 40),
-                      textInput="START", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))
-
-# Button setup for options button
-optionsButton = Button(image=pygame.image.load("assets/playRect2.png"), pos=(screenWidth / 2, screenHeight / 2 + 130),
-                        textInput="OPTIONS", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))
-
-# Increase and decrease buttons for winning score and back button for the options menu
-increaseScoreButton = Button(image=None, pos=(screenWidth / 2 + 100, screenHeight / 2 + 115),
-                             textInput="+", font=pygame.font.Font("assets/font.ttf", 36), baseColor=WHITE, hoveringColor=(100, 100, 100))
-decreaseScoreButton = Button(image=None, pos=(screenWidth / 2 - 100, screenHeight / 2 + 115),
-                             textInput="-", font=pygame.font.Font("assets/font.ttf", 36), baseColor=WHITE, hoveringColor=(100, 100, 100))
-backButton = Button(image=None, pos=(screenWidth / 2, screenHeight / 2 + 200),
-                    textInput="BACK", font=pygame.font.Font("assets/font.ttf", 28), baseColor=WHITE, hoveringColor=(100, 100, 100))
+# Initialize buttons
+startButton, optionsButton, increaseScoreButton, decreaseScoreButton, backButton = initButton(screenWidth, screenHeight, font, WHITE, (100, 100, 100))
 
 # Paddle and Ball dimensions
 paddleWidth = 15
