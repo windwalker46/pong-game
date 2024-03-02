@@ -106,15 +106,12 @@ while running:
         # Check for winning condition is met to update gameState
         if playerScore >= winningScore:
             print("Player wins!")
-            gameState = "startMenu"
-            ballMoving = False  # Stop the ball movement
+            gameState = "startMenu"  # Return to start menu
             playerScore, opponentScore = 0, 0  # Reset scores
         elif opponentScore >= winningScore:
             print("Opponent wins!")
             gameState = "startMenu"
-            ballMoving = False
             playerScore, opponentScore = 0, 0
-
 
         # Drawing game objects and scores
         screen.fill((0, 0, 0))
@@ -128,7 +125,7 @@ while running:
         screen.blit(playerText, (screenWidth / 4, 20))
         screen.blit(opponentText, (3 * screenWidth / 4, 20))
 
-    pygame.display.flip()
+    pygame.display.flip() 
     clock.tick(60)
 
 pygame.quit()  # Quit Pygame when the loop ends
